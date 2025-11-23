@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Word Circle Interactive Template</title>
+
+  <!-- Using Inter font, as requested by general guidelines, and it's similar to Open Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    /* New Brand Colors */
+    :root {
+      --primary-dark: #1f2a52; /* Dark Blue */
+      --primary-dark-rgb: 31, 42, 82; /* RGB for #1f2a52 */
+      --accent-cyan: #00bec7; /* Accent Cyan */
+      --light-bg: #d2f0f0; /* Lightest Background */
+      --neutral-grey: #abb5bf; /* Neutral Grey */
+      --font-stack: 'Inter', sans-serif;
+    }
+
+    body {
+      font-family: var(--font-stack);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      /* Using one of the lighter brand colors for the body background */
+      background-color: var(--light-bg); 
+      overflow: hidden;
+    }
+
+    .word-circle-container {
+      position: relative;
+      width: 630px;
+      height: 630px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background-color: white; /* Use white for better contrast with the light-bg body */
+      box-shadow: 0 10px 30px rgba(31, 42, 82, 0.1);
+    }
+
+    .center-circle {
+      width: 300px;
+      height: 300px;
+      background-color: var(--primary-dark);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white; /* Contrast color for dark background */
+      font-size: 1.1em;
+      line-height: 1.4;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 2;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .center-circle p {
+      margin: 0;
+    }
+
+    .outer-circles-wrapper {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+    }
+
+    .outer-circle {
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background-color: var(--light-bg); /* Use light brand color */
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      z-index: 1;
+      border: 3px solid white;
+    }
+
+    .outer-circle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .outer-circle.active {
+      /* Use the new accent color for the active ring */
+      box-shadow: 0 0 0 5px var(--accent-cyan), 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .outer-circle img {
+      max-width: 90%;
+      max-height: 90%;
+      display: block;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+      opacity: 0.8;
+    }
+
+    .hover-content-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      /* Use primary-dark with opacity */
+      background-color: rgba(var(--primary-dark-rgb), 0.85); 
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      padding: 10px;
+      box-sizing: border-box;
+      text-align: center;
+      border: 3px solid var(--accent-cyan);
+    }
+
+    .outer-circle:hover .hover-content-overlay {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .hover-content-overlay h3 {
+      color: white;
+      margin: 5px 0 0 0;
+      font-size: 1.2em;
+      line-height: 1.3;
+      padding: 0 5px;
+      box-sizing: border-box;
+      z-index: 2;
+    }
+
+    .circle-number {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 40px;
+      height: 40px;
+      background-color: var(--accent-cyan);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: 700;
+      color: var(--primary-dark);
+      font-size: 1.1em;
+      z-index: 3;
+      border: 2px solid white;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .word-circle-container {
+            width: 90vw;
+            height: 90vw;
+            max-width: 450px;
+            max-height: 450px;
+        }
+        .center-circle {
+            width: 45vw;
+            height: 45vw;
+            max-width: 200px;
+            max-height: 200px;
+            font-size: 0.9em;
+        }
+        .outer-circle {
+            width: 25vw;
+            height: 25vw;
+            max-width: 100px;
+            max-height: 100px;
+        }
+        .circle-number {
+            width: 25px;
+            height: 25px;
+            font-size: 0.9em;
+        }
+        .hover-content-overlay h3 {
+            font-size: 1em;
+        }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="word-circle-container">
+    <div class="center-circle">
+      <p id="centerText">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+    <div class="outer-circles-wrapper">
+      <!-- Circle 1 – Placeholder Text 1 -->
+      <div class="outer-circle" data-text="Elementum vitae et vitae. Amet consectetur adipiscing elit. Aliquam id diam maecenas ultricies mi eget.">
+        <img src="https://placehold.co/150x150/d2f0f0/1f2a52?text=Image+1" alt="Placeholder Image 1" onerror="this.onerror=null; this.src='https://placehold.co/150x150/d2f0f0/1f2a52?text=Image+1';">
+        <div class="hover-content-overlay">
+          <div class="circle-number">1</div>
+          <h3>Vivamus Eget Elit</h3>
+        </div>
+      </div>
+
+      <!-- Circle 2 – Placeholder Text 2 -->
+      <div class="outer-circle" data-text="Nulla facilisi cras fermentum odio. Suspendisse sed nisi lacus sed viverra. Enim facilisis gravida neque convallis a cras semper auctor.">
+        <img src="https://placehold.co/150x150/d2f0f0/1f2a52?text=Image+2" alt="Placeholder Image 2" onerror="this.onerror=null; this.src='https://placehold.co/150x150/d2f0f0/1f2a52?text=Image+2';">
+        <div class="hover-content-overlay">
+          <div class="circle-number">2</div>
+          <h3>Aliquam Erat</h3>
+        </div>
+      </div>
+
+      <!-- Circle 3 – Placeholder Text 3 -->
+      <div class="outer-circle" data-text="Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Turpis massa sed elementum tempus egestas sed.">
+        <img src="https://placehold.co/150x150/d2f0f0/1f2a52?text=Image+3" alt="Placeholder Image 3" onerror="this.onerror=null; this.src='https://placehold.co/150x150/d2f0f0/1f2a52?text=Image+3';">
+        <div class="hover-content-overlay">
+          <div class="circle-number">3</div>
+          <h3>Tempor Incididunt</h3>
+        </div>
+      </div>
+
+      <!-- Circle 4 – Placeholder Text 4 -->
+      <div class="outer-circle" data-text="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.">
+        <img src="https://placehold.co/150x150/d2f0f0/1f2a52?text=Image+4" alt="Placeholder Image 4" onerror="this.onerror=null; this.src='https://placehold.co/150x150/d2f0f0/1f2a52?text=Image+4';">
+        <div class="hover-content-overlay">
+          <div class="circle-number">4</div>
+          <h3>Veniam, Quis</h3>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const centerTextElement = document.getElementById('centerText');
+      const outerCircles = document.querySelectorAll('.outer-circle');
+      const numberOfCircles = outerCircles.length;
+
+      // Initial text content from the center circle
+      const initialCenterText = centerTextElement.textContent;
+
+      // The positioning logic must run *after* the DOM is ready
+      // The dimensions used in CSS must match here
+      const containerWidth = 630;
+      const outerCircleSize = 150;
+      // Calculate the radius to position the outer circles slightly outside the center
+      const radius = (containerWidth / 2) - (outerCircleSize / 2) + 20; 
+      const centerX = containerWidth / 2;
+      const centerY = containerWidth / 2;
+
+      function positionOuterCircles() {
+        outerCircles.forEach((circle, index) => {
+          // Start positioning at the top (angle -Math.PI / 2 or 1.5 * Math.PI)
+          // and rotate clockwise.
+          const angleOffset = -Math.PI / 2; // Start from top
+          const angle = angleOffset + (index / numberOfCircles) * 2 * Math.PI;
+          
+          const x = centerX + radius * Math.cos(angle) - (outerCircleSize / 2);
+          const y = centerY + radius * Math.sin(angle) - (outerCircleSize / 2);
+          
+          // Apply position
+          circle.style.left = `${x}px`;
+          circle.style.top = `${y}px`;
+        });
+      }
+
+      // Initial positioning call
+      positionOuterCircles();
+
+      // Interaction Logic
+      outerCircles.forEach(circle => {
+        circle.addEventListener('click', () => {
+          const contentToShow = circle.getAttribute('data-text');
+          
+          // 1. Update the center text
+          centerTextElement.textContent = contentToShow;
+          
+          // 2. Remove 'active' class from all, add to the clicked one
+          outerCircles.forEach(oc => oc.classList.remove('active'));
+          circle.classList.add('active');
+        });
+      });
+      
+      // Optional: Add a listener to reset the text if the center is clicked
+      centerTextElement.closest('.center-circle').addEventListener('click', () => {
+        centerTextElement.textContent = initialCenterText;
+        outerCircles.forEach(oc => oc.classList.remove('active'));
+      });
+    });
+  </script>
+</body>
+</html>
